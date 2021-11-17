@@ -6,6 +6,7 @@ module.exports = {
             const user = req.body
             const savedUser = await QueryUser.createUser(user);
             if(savedUser){
+                delete savedUser.password;
                 req.login(savedUser)
                 res.json({
                     status: 200,
@@ -25,13 +26,18 @@ module.exports = {
             const {password, email} = req.body;
             const user = await QueryUser.getUserByEmail(email)
             if(user){
-                console.log(password, user.local.password);
                 const matchPassword = await user.comparePassword(password);
                 if(matchPassword){
                     req.login(user);
+                    delete user.password
                     res.json({
                         status: 200,
                         response: user
+                    })
+                }else{
+                    res.json({
+                        status: 403,
+                        response: "forbidden"
                     })
                 }
             }else{
@@ -54,5 +60,19 @@ module.exports = {
             status: 200,
             response: 'déconnecter'
         })
+    },
+    verifToken: (req,res)=>{
+        if(req.user){
+            const user = JSON.stringify(req.user)
+            res.json({
+                response: user,
+                status: 200
+            })
+        }else{
+            res.json({
+                status: 403,
+                response: 'invalid token'
+            })
+        }
     }
 }

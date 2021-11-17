@@ -1,10 +1,12 @@
 const express = require("express");
+const parser = require('cookie-parser')
 const app = express();
 exports.app = app;
 const path = require("path");
 const baseRouter = require("./routes/index");
 require("./database");
 app.use(express.json());
+app.use(parser())
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "./dist")));
 

@@ -8,7 +8,7 @@ const createJwtToken = ({ user = null, id = null }) => {
   const jwtToken = jwt.sign(
     {
       sub: id || user._id.toString(),
-      exp: Math.floor(Date.now() / 1000) + 5,
+      exp: Math.floor(Date.now() / 1000) + 3600 * 24,
     },
     secret
   );
@@ -28,7 +28,7 @@ const checkExpirationToken = (token, res) => {
   }
 }
 
-const extractUserFromToken = async (req, res, next) => {
+ const extractUserFromToken = async (req, res, next) => {
   const token = req.cookies.jwt;
   if (token) {
     try {
